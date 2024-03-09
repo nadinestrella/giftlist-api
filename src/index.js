@@ -1,9 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
-require('dotenv').config();
 
-//1 crear el servidor
 const server = express();
 server.use(cors());
 server.use(express.json({ limit: '25mb' }));
@@ -22,6 +22,7 @@ async function getConnection() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
   });
+
   await connection.connect();
 
   if (connection) {
@@ -33,17 +34,14 @@ async function getConnection() {
   return connection;
 }
 
-//enpoints
+// endpoints
 
 server.get('/toys', async (req, res) => {
   const conex = await getConnection();
   const selectCategory = 'SELECT * FROM toys';
   const [results] = await conex.query(selectCategory);
-  // console.log(results);
 
   conex.end();
   res.json({ success: true, data: results });
 });
 
-// const staticServer = './web/dist';
-// server.use(express.static(staticServer));
